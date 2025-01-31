@@ -62,7 +62,7 @@ async def submit_assessment(report_request: ReportRequest):
     return JSONResponse(content=report)
 
 
-@app.get("/analytics", response_class=HTMLResponse)
+'''@app.get("/analytics", response_class=HTMLResponse)
 async def analytics_page(request: Request):
     """Render the analytics page"""
     data = get_iot_analytics()
@@ -130,8 +130,8 @@ def store_report(report: Dict):
     report_file_path = os.path.join(report_dir, f"report_{report['score']}.json")
     with open(report_file_path, 'w') as file:
         file.write(str(report))
-    print(f"Report saved to {report_file_path}")
+    print(f"Report saved to {report_file_path}")'''
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
