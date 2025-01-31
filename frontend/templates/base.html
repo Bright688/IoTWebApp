@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}IoT Security WebApp{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', path='js/main.js') }}" defer></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-xl font-bold">IoT Security</a>
+            <ul class="flex gap-6">
+                <li><a href="/" class="hover:text-gray-300">Home</a></li>
+                <li><a href="/assessment" class="hover:text-gray-300">Assessment</a></li>
+                <li><a href="/report" class="hover:text-gray-300">Report</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="container mx-auto p-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-6 mt-8 text-center">
+        <p>&copy; 2025 IoT Security Web App</p>
+    </footer>
+
+</body>
+</html>

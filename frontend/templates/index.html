@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+
+{% block title %}Home - IoT Security WebApp{% endblock %}
+
+{% block content %}
+
+<style>
+
+    *{
+        margin:0;
+        padding:0;
+    }
+    
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    
+}
+
+.section {
+    padding: 2rem 0;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s ease-out;
+}
+
+.section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+    font-size: 2rem;
+    color: #34495e;
+    font-weight: 600;
+}
+
+.section-header p {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+}
+
+.section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    flex-wrap: wrap;  /* Allow wrapping of cards */
+}
+
+.section-item {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;  /* Default to full width on small screens */
+}
+
+.section-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.section-item .title {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 1.25rem;
+}
+
+.section-item a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.section-item a:hover {
+    color: #2980b9;
+}
+
+.button {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.button:hover {
+    background-color: #2980b9;
+    transform: translateY(-3px);
+}
+
+/* Scroll Animation */
+.fade-on-scroll {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.fade-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    .section-content {
+        flex-direction: row;  /* Arrange items in a row on larger screens */
+        gap: 2rem;
+    }
+
+    .section-item {
+        width: 45%;  /* Set the width to 45% for each card */
+    }
+}
+</style>
+
+<div class="w-full text-center py-12 bg-gradient-to-r from-blue-500 to-teal-500 text-white">
+    <div class="max-w-screen-xl mx-auto px-4">
+        <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight">Welcome to the IoT Security WebApp</h1>
+        <p class="mt-4 text-lg sm:text-xl font-medium">Enhance your IoT security with real-time assessments, reports, and best practices.</p>
+
+        <!-- Call to Action Buttons -->
+        <div class="mt-8 flex flex-col sm:flex-row justify-center gap-6 sm:gap-8">
+            <a href="/assessment" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 w-full sm:w-auto mb-4 sm:mb-0">
+                Take Security Assessment
+            </a>
+            <a href="/report" class="bg-gray-800 hover:bg-gray-700 text-white px-8 py-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 w-full sm:w-auto">
+                View Reports
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Educational Resources Section -->
+<section class="container section fade-on-scroll" id="educational-resources">
+    <div class="section-header">
+        <h2>Educational Resources</h2>
+        <p>Explore a variety of educational resources to enhance your knowledge in IoT security, cloud computing, and cybersecurity practices.</p>
+    </div>
+    <div class="section-content justify-center">
+        <!-- IoT Security Basics Section -->
+        <div class="section-item">
+            <div class="title">IoT Security Basics</div>
+            <p>Understand the foundational concepts of IoT security, from common vulnerabilities to best practices for secure device management.</p>
+            <ul>
+                <li><a href="https://www.cisa.gov/publication/identifying-cybersecurity-risks-iot-devices">CISA: Identifying Cybersecurity Risks of IoT Devices</a></li>
+                <li><a href="https://www.cert.org/ir/IoTsecurity/">CERT: IoT Security Resources</a></li>
+                <li><a href="https://www.owasp.org/index.php/Internet_of_Things">OWASP IoT Project</a></li>
+                <li><a href="https://www.ncsc.gov.uk/guidance/internet-things-security">NCSC: Internet of Things Security Guidance</a></li>
+                <li><a href="https://www.iotforall.com/iot-security-best-practices/">IoT For All: Security Best Practices</a></li>
+            </ul>
+        </div>
+
+        <!-- Advanced Threat Mitigation Section -->
+        <div class="section-item">
+            <div class="title">Advanced Threat Mitigation</div>
+            <p>Learn techniques for mitigating complex threats targeting IoT networks, such as denial of service (DoS) and IoT botnets.</p>
+            <ul>
+                <li><a href="https://www.sans.org/cyber-security-courses/securing-the-internet-of-things/">SANS: Securing the Internet of Things</a></li>
+                <li><a href="https://www.blackhat.com/">BlackHat IoT Security Workshops</a></li>
+                <li><a href="https://www.rapid7.com/fundamentals/denial-of-service-attack-dos/">Rapid7: Denial of Service (DoS) Attack</a></li>
+                <li><a href="https://www.sophos.com/en-us/solutions/iot-security">Sophos: IoT Security</a></li>
+                <li><a href="https://www.kaspersky.com/blog/internet-of-things-security/18775/">Kaspersky: IoT Security</a></li>
+            </ul>
+        </div>
+
+
+        <!-- Cybersecurity Fundamentals Section -->
+        <div class="section-item">
+            <div class="title">Cybersecurity Fundamentals</div>
+            <p>Gain a deep understanding of cybersecurity fundamentals, including network security, encryption, and risk management.</p>
+            <ul>
+                <li><a href="https://www.isaca.org/resources/isaca-journal/past-issues/2019/vol-5/cybersecurity-and-risk-management">ISACA: Cybersecurity and Risk Management</a></li>
+                <li><a href="https://www.cybrary.it/">Cybrary: Cybersecurity Courses</a></li>
+                <li><a href="https://www.udemy.com/course/cyber-security-for-beginners/">Udemy: Cybersecurity for Beginners</a></li>
+                <li><a href="https://www.comptia.org/training/resources/cybersecurity-resources">CompTIA: Cybersecurity Resources</a></li>
+                <li><a href="https://www.sans.org/cyber-security-courses/network-security/">SANS: Network Security Fundamentals</a></li>
+            </ul>
+        </div>
+
+        <!-- Securing IoT Devices Section -->
+        <div class="section-item">
+            <div class="title">Securing IoT Devices</div>
+            <p>Learn how to secure your IoT devices against attacks, focusing on firmware, access controls, and monitoring for vulnerabilities.</p>
+            <ul>
+                <li><a href="https://www.iotsecurityfoundation.org/">IoT Security Foundation</a></li>
+                <li><a href="https://www.synopsys.com/advanced-threat-intelligence/iot-security.html">Synopsys: IoT Security</a></li>
+                <li><a href="https://www.fortinet.com/resources/cyberglossary/iot-security">Fortinet: IoT Security</a></li>
+                <li><a href="https://www.paloaltonetworks.com/iot-security">Palo Alto Networks: IoT Security</a></li>
+                <li><a href="https://www.f5.com/solutions/iot-security">F5: IoT Security Solutions</a></li>
+            </ul>
+        </div>
+
+        <!-- Threat Intelligence Section -->
+        <div class="section-item">
+            <div class="title">Threat Intelligence</div>
+            <p>Explore the latest tools and techniques for gathering, analyzing, and utilizing threat intelligence to protect IoT networks.</p>
+            <ul>
+                <li><a href="https://www.recordedfuture.com/introducing-threat-intelligence/">Recorded Future: Threat Intelligence</a></li>
+                <li><a href="https://www.fireeye.com/">FireEye: Threat Intelligence</a></li>
+                <li><a href="https://www.mandiant.com/">Mandiant: Threat Intelligence</a></li>
+                <li><a href="https://www.crowdstrike.com/solutions/threat-intelligence/">CrowdStrike: Threat Intelligence</a></li>
+                <li><a href="https://www.sonicwall.com/products/advanced-threat-protection/">SonicWall: Advanced Threat Protection</a></li>
+            </ul>
+        </div>
+
+        <!-- Security Audits Section -->
+        <div class="section-item">
+            <div class="title">Security Audits</div>
+            <p>Learn how to conduct security audits for IoT systems and cloud services to identify and fix vulnerabilities in your infrastructure.</p>
+            <ul>
+                <li><a href="https://www.sans.org/cyber-security-courses/penetration-testing-and-ethical-hacking/">SANS: Penetration Testing and Ethical Hacking</a></li>
+                <li><a href="https://www.hackingarticles.in/">Hacking Articles: Security Audits</a></li>
+                <li><a href="https://www.auditboard.com/resources/it-security-audit/it-security-audit-templates/">AuditBoard: IT Security Audit Templates</a></li>
+                <li><a href="https://www.cybersecurity-insiders.com/cybersecurity-audit-checklist/">CyberSecurity Insiders: Audit Checklist</a></li>
+                <li><a href="https://www.sonicwall.com/products/audit-logs/">SonicWall: Audit Logs</a></li>
+            </ul>
+        </div>
+
+
+    </div>
+</section>
+
+<<!-- Cloud Information Section -->
+<section class="container section fade-on-scroll" id="cloud-info">
+    <div class="section-header">
+        <h2>Cloud Information for IoT Security</h2>
+        <p>Discover how cloud services are transforming IoT security with scalable, secure solutions for device management, data processing, and threat mitigation.</p>
+    </div>
+    <div class="section-content justify-center">
+        <div class="section-item">
+            <div class="title">Cloud Integration with IoT</div>
+            <p>Cloud integration allows seamless management of IoT devices and scalable data storage, providing real-time analysis and control over IoT devices.</p>
+            <ul>
+                <li><a href="https://aws.amazon.com/iot/">AWS IoT Core Overview</a></li>
+                <li><a href="https://www.microsoft.com/en-us/azure/iot">Azure IoT Hub</a></li>
+                <li><a href="https://cloud.google.com/iot">Google Cloud IoT Core</a></li>
+            </ul>
+        </div>
+
+        <div class="section-item">
+            <div class="title">Benefits of Cloud for IoT Security</div>
+            <p>Cloud platforms offer centralized control, secure data storage, and automated security features for IoT devices, ensuring constant updates and improved response time for threats.</p>
+            <ul>
+                <li><a href="https://www.sans.org/cyber-security-courses/cloud-security-for-iot/">SANS: Cloud Security for IoT</a></li>
+            </ul>
+        </div>
+
+        <!-- Cloud Security for IoT Section -->
+        <div class="section-item">
+            <div class="title">Cloud Security for IoT</div>
+            <p>Learn how to secure cloud-based IoT infrastructures, ensuring data privacy and system resilience in the cloud environment.</p>
+            <ul>
+                <li><a href="https://www.cio.com/article/286504/what-is-cloud-security-and-why-is-it-important.html">CIO: What is Cloud Security?</a></li>
+                <li><a href="https://www.cloudsecurityalliance.org/">Cloud Security Alliance</a></li>
+                <li><a href="https://www.microsoft.com/security/blog/2020/04/22/secure-iot-deployment-and-cloud-architecture/">Microsoft: Secure IoT Deployment and Cloud Architecture</a></li>
+                <li><a href="https://www.amazon.com/aws-cloud-security-best-practices/">AWS Cloud Security Best Practices</a></li>
+                <li><a href="https://www.ibm.com/cloud/learn/cloud-security">IBM: Cloud Security</a></li>
+            </ul>
+        </div>
+
+        <!-- New Card: Cloud-Edge Computing for IoT -->
+        <div class="section-item">
+            <div class="title">Cloud-Edge Computing for IoT</div>
+            <p>Explore how combining cloud computing with edge computing can enhance IoT device performance, reduce latency, and improve security for time-sensitive applications.</p>
+            <ul>
+                <li><a href="https://www.oracle.com/cloud/edge-computing.html">Oracle: Edge Computing Overview</a></li>
+                <li><a href="https://www.microsoft.com/en-us/azure/edge-computing">Azure Edge Computing</a></li>
+                <li><a href="https://www.ibm.com/cloud/edge-computing">IBM: Edge Computing</a></li>
+                <li><a href="https://www.cio.com/article/284947/edge-computing-and-the-future-of-the-cloud.html">CIO: Edge Computing and Cloud</a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Animation on Scroll
+    const sections = document.querySelectorAll('.fade-on-scroll');
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+</script>
+
+{% endblock %}
