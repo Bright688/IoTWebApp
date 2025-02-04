@@ -1,0 +1,126 @@
+/* TailwindCSS Base Styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Global Styles */
+
+/* Body and general settings */
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.5;
+  background-color: #f7fafc;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom Colors for Feedback */
+.text-green-600 {
+  color: #48bb78;
+}
+
+.text-red-600 {
+  color: #e53e3e;
+}
+
+.text-blue-600 {
+  color: #3182ce;
+}
+
+.text-gray-700 {
+  color: #4a5568;
+}
+
+/* Font Size Controls for Accessibility */
+body {
+  font-size: 16px;
+}
+
+/* Custom Fonts for Headers */
+h1, h2, h3, h4, h5 {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Button Styles for Font Resizing */
+.font-size-btn {
+  padding: 0.5rem 1rem;
+  background-color: #4a5568;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  margin: 0.5rem;
+}
+
+.font-size-btn:hover {
+  background-color: #2d3748;
+}
+
+/* Custom Scrollbar for Accessibility */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #4a5568;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #edf2f7;
+}
+
+/* Custom Card for Assessment and Results */
+.card {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Custom Styling for Form Elements */
+input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+input[type="radio"]:checked {
+  background-color: #3182ce;
+  border-color: #3182ce;
+}
+
+label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-right: 1rem;
+}
+
+/* Custom Styles for Feedback Messages */
+.feedback-message {
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.text-green-600 {
+  color: #48bb78;
+}
+
+.text-red-600 {
+  color: #e53e3e;
+}
+
+/* Customize Tailwind Forms (Optional) */
+@layer components {
+  .form-input {
+    @apply border-2 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  .form-select {
+    @apply border-2 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  .form-checkbox {
+    @apply rounded-md p-1;
+  }
+}
