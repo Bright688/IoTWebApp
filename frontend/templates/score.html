@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
+    <div class="chart-container text-center mb-8">
+        <h2 class="text-2xl font-medium text-gray-700">Security Assessment Performance</h2>
+        <img src="data:image/png;base64,{{ chart }}" alt="Score Chart" class="mx-auto">
+        <p class="text-3xl font-bold mt-4  text-gray-800 text-center" style="margin-top: -50px !important;">{{ percentage|round }}%</p>
+    </div>
+    
+    <div class="download-container text-center" style="margin-top: 250px;">
+        <h2 class="text-xl font-medium text-gray-700">Download Your Report</h2>
+        <a href="{{ report_url }}" download class="text-lg text-blue-600 hover:underline">Click here to download the report</a>
+    </div>
+</div>
+{% endblock %}
