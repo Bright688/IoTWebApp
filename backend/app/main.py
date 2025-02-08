@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, Depends, Form
+from fastapi import FastAPI, APIRouter, Depends, Form, Response, Query
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates  # Updated import
@@ -13,6 +13,7 @@ import numpy as np
 import io
 import base64
 from urllib.parse import quote
+from fpdf import FPDF
 
 # Initialize the FastAPI app
 app = FastAPI()
@@ -47,13 +48,20 @@ questions = [
     {"question": "Which technology enhances IoT security by reducing latency in time-sensitive applications?", "options": ["Cloud computing", "Edge computing", "Blockchain", "VPNs"], "answer": "Edge computing"}
 ]
 
+# Load a Unicode font
+FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf"  # Adjust this path if needed
+
+
+# Temporary storage (use database in production)
+user_responses = {}
+
 # Serve quiz form
 @app.get("/assessment", response_class=HTMLResponse)
-def serve_quiz(request: Request):
+async def serve_quiz(request: Request):
     return templates.TemplateResponse("assessment.html", {"request": request, "questions": questions})
 
 @app.post("/submit")
-def submit_quiz(
+async def submit_quiz(
     request: Request,
     first_name: str = Form(...),  
     last_name: str = Form(...),   
@@ -76,8 +84,8 @@ def submit_quiz(
     # Calculate percentage
     percentage = (score / 10) * 100
     
-     # Logging (Optional)
-    print(f"First Name: {first_name}, Last Name: {last_name}, Email: {email}, Score: {score}, Percentage: {percentage}%")
+     # Store user answers
+    user_responses[f"{first_name}_{last_name}"] = user_answers
     
     # Redirect with URL encoding
     return RedirectResponse(
@@ -85,71 +93,209 @@ def submit_quiz(
         status_code=303
     )
 
-# Serve the score page with chart
 @app.get("/score", response_class=HTMLResponse)
-def show_score(request: Request, score: int = 0):
+async def show_score(
+    request: Request, 
+    score: int = 0, 
+    first_name: str = "",  
+    last_name: str = "",   
+    email: str = ""
+):
     # Calculate percentage
     percentage = (score / 10) * 100
-    
+
     # Generate chart for the score
     fig, ax = plt.subplots(figsize=(8, 4), subplot_kw={'projection': 'polar'})
-    
+
     # Set the angle limits
     ax.set_thetamin(0)
     ax.set_thetamax(180)
-    
+
     # Create the color bands
     theta = np.linspace(0, np.pi, 100)
-    
-    # Red zone (0-30)
     ax.fill_between(theta[0:30], 0.8, 1, color='red', alpha=0.3)
-    # Yellow zone (30-70)
     ax.fill_between(theta[30:70], 0.8, 1, color='yellow', alpha=0.3)
-    # Green zone (70:)
     ax.fill_between(theta[70:], 0.8, 1, color='green', alpha=0.3)
-    
+
     # Add the needle
     needle_angle = np.pi * percentage / 100
     ax.plot([0, needle_angle], [0, 0.9], color='black', linewidth=2)
-    
+
     # Add the score in the center
     ax.text(np.pi/2, 0.2, f'{int(percentage)}', ha='center', va='center', fontsize=20)
-    
-    # Customize the chart - Fixed the ticks issue
-    ax.set_rticks([])  # Remove radial ticks
-    # Create an array of equally spaced angles for the ticks
-    tick_angles = np.linspace(0, np.pi, 6)  # 6 ticks for 0,20,40,60,80,100
+
+    # Customize the chart
+    ax.set_rticks([])  
+    tick_angles = np.linspace(0, np.pi, 6)
     ax.set_xticks(tick_angles)
     ax.set_xticklabels(['0', '20', '40', '60', '80', '100'])
     ax.set_title('', pad=20)
-    
+
     # Save the chart to a buffer
     img_buf = io.BytesIO()
     plt.savefig(img_buf, format='png', bbox_inches='tight', transparent=True)
     img_buf.seek(0)
     img_base64 = base64.b64encode(img_buf.read()).decode('utf-8')
     plt.close()
-    
-    # Provide report URL
-    report_url = "/download_report"
-    
+
+    # Provide report URL with user info
+    report_url = f"/download_report?first_name={quote(first_name)}&last_name={quote(last_name)}&score={score}&percentage={percentage:.2f}"
+
     return templates.TemplateResponse(
         "score.html",
         {
             "request": request,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
             "percentage": percentage,
             "chart": img_base64,
             "report_url": report_url
         }
     )
 
+# Function to find the font file dynamically
+def find_font_file(font_name="DejaVuSans.ttf"):
+    for root, _, files in os.walk(os.getcwd()):
+        if font_name in files:
+            return os.path.join(root, font_name)
+    raise FileNotFoundError(f"Font file '{font_name}' not found in project directory.")
 
-# Serve the PDF report download
+
+# Locate fonts dynamically
+FONT_PATH = find_font_file("DejaVuSans.ttf")
+BOLD_FONT_PATH = find_font_file("DejaVuSans-Bold.ttf")
+EMOJI_FONT_PATH = find_font_file("NotoEmoji.ttf")
+
+
 @app.get("/download_report")
-def download_report():
-    return FileResponse("quiz_report.pdf", media_type="application/pdf", filename="quiz_report.pdf")
+async def download_report(first_name: str, last_name: str, score: int, percentage: float):
+    user_key = f"{first_name}_{last_name}"
+    user_answers = user_responses.get(user_key, ["No Answer"] * len(questions))
+
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    
+
+    # Register fonts dynamically
+    pdf.add_font("DejaVu", "", FONT_PATH, uni=True)
+    pdf.add_font("DejaVu", "B", BOLD_FONT_PATH, uni=True)
+    pdf.add_font("NotoEmoji", "", EMOJI_FONT_PATH, uni=True)
+    
+    # Set title
+    pdf.set_font("DejaVu", "B", 16)
+    pdf.cell(190, 10, "IoT Security Quiz Report", ln=True, align="C")
+
+    # User Info
+    pdf.set_font("DejaVu", "B", 12)
+    pdf.ln(10)
+    pdf.cell(190, 10, f"Name: {first_name} {last_name}", ln=True)
+    pdf.cell(190, 10, f"Percentage: {percentage:.1f}%", ln=True)
+
+    # Generate the score chart
+    fig, ax = plt.subplots(figsize=(8, 4), subplot_kw={'projection': 'polar'})
+
+    # Set angle limits
+    ax.set_thetamin(0)
+    ax.set_thetamax(180)
+
+    # Color bands for performance
+    theta = np.linspace(0, np.pi, 100)
+    ax.fill_between(theta[:30], 0.8, 1, color='red', alpha=0.3)  # 0-30%
+    ax.fill_between(theta[30:70], 0.8, 1, color='yellow', alpha=0.3)  # 30-70%
+    ax.fill_between(theta[70:], 0.8, 1, color='green', alpha=0.3)  # 70-100%
+
+    # Needle indicating performance
+    needle_angle = np.pi * percentage / 100
+    ax.plot([0, needle_angle], [0, 0.9], color='black', linewidth=2)
+
+    # Add score in center
+    ax.text(np.pi/2, 0.2, f'{int(percentage)}%', ha='center', va='center', fontsize=20)
+
+    # Customize chart appearance
+    ax.set_rticks([])
+    ax.set_xticks(np.linspace(0, np.pi, 6))
+    ax.set_xticklabels(['0', '20', '40', '60', '80', '100'])
+    ax.set_title('', pad=20)
+
+    # Save chart as an image file
+    chart_path = f"/tmp/{first_name}_{last_name}_chart.png"
+    plt.savefig(chart_path, format='png', bbox_inches='tight', transparent=True)
+    plt.close()
+
+    # Add chart to PDF
+    pdf.ln(10)
+    pdf.image(chart_path, x=50, w=100)
 
 
+    # Quiz Questions & Answers
+    pdf.ln(10)
+    pdf.set_font("DejaVu", "B", 14)
+    pdf.cell(190, 10, "Quiz Questions & Answers", ln=True)
+
+    pdf.set_font("DejaVu", "", 12)
+    options_labels = ['A', 'B', 'C', 'D']
+
+    for index, q in enumerate(questions, start=1):
+        pdf.ln(5)
+        pdf.multi_cell(190, 7, f"{index}. {q['question']}", ln=True)
+
+        # Display options properly
+        for i, option in enumerate(q["options"]):
+            pdf.cell(10, 6, f"{options_labels[i]}) ", ln=False)
+            pdf.cell(180, 6, option, ln=True)
+
+        # Display User's Selected Answer & Status with Colored Arrows
+        user_choice = user_answers[index - 1] if index - 1 < len(user_answers) else "No Answer"
+
+        pdf.set_font("DejaVu", "B", 12)
+        # Display User's Selected Answer & Status with Colored Arrows and Emojis
+        if user_choice == q['answer']:
+            pdf.set_text_color(0, 128, 0)  # Green for correct
+            
+            # Write text before emoji with DejaVu Bold
+            pdf.set_font("DejaVu", "B", 12)
+            pdf.cell(190, 7, f"   ➜ Your Answer: {user_choice} ", ln=0)
+            
+            # Write emoji using NotoEmoji
+            pdf.set_font("NotoEmoji", "", 12)
+            pdf.cell(10, 7, "✅", ln=0)
+            
+            # Write the remainder of the message using DejaVu Bold again
+            pdf.set_font("DejaVu", "B", 12)
+            pdf.cell(0, 7, " (Correct)", ln=1)
+        else:
+            pdf.set_text_color(255, 0, 0)  # Red for incorrect
+            
+            # Write text before emoji with DejaVu Bold
+            pdf.set_font("DejaVu", "B", 12)
+            pdf.cell(190, 7, f"   ➜ Your Answer: {user_choice} ", ln=0)
+            
+            # Write emoji using NotoEmoji
+            pdf.set_font("NotoEmoji", "", 12)
+            pdf.cell(10, 7, "❌", ln=0)
+            
+            # Write the remainder of the message using DejaVu Bold again
+            pdf.set_font("DejaVu", "B", 12)
+            pdf.cell(0, 7, " (Incorrect)", ln=1)
+            
+        pdf.set_text_color(0, 0, 0)  # Reset color to black
+        pdf.set_font("DejaVu", "", 12)
+
+    
+    # Save PDF to a buffer
+    pdf_output = io.BytesIO()
+    pdf.output(pdf_output)
+    pdf_output.seek(0)
+
+    # Clean up the temp image file
+    if os.path.exists(chart_path):
+        os.remove(chart_path)
+
+    return Response(pdf_output.read(), media_type="application/pdf", headers={
+        "Content-Disposition": f"attachment; filename={first_name}_{last_name}_quiz_report.pdf"
+    })
 
 '''@app.post("/generate-report", response_class=JSONResponse)
 async def generate_report(report_request: ReportRequest):
