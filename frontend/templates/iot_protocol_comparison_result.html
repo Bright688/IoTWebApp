@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Personalized IoT Advice{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-4">Your Personalized IoT Advice</h1>
+  <div class="bg-white shadow rounded p-4 mb-6">
+    <pre class="whitespace-pre-wrap">{{ advice }}</pre>
+  </div>
+  <div class="text-center">
+    <a href="/iot_protocol_comparison" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      Back to Comparison & Questionnaire
+    </a>
+  </div>
+</div>
+{% endblock %}

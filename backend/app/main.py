@@ -571,18 +571,14 @@ async def security_guidance(request: Request):
         "vulnerabilities": vulnerabilities
     })
 
- #Comparative Analysis of IoT Protocols
+# Function: Compare IoT Protocols
 # ----------------------------------------------------------------------
 def compare_iot_protocols():
-    """
-    Returns a dictionary comparing common IoT protocols.
-    Each protocol is compared by its description, key features, advantages, disadvantages, and use cases.
-    """
     protocols = {
         "CoAP": {
             "description": (
-                "The Constrained Application Protocol (CoAP) is designed specifically for resource-constrained "
-                "devices and low-power, lossy networks. It is lightweight, UDP-based, and supports multicast."
+                "The Constrained Application Protocol (CoAP) is designed specifically for resource-constrained devices and low-power, lossy networks. "
+                "It is lightweight, UDP-based, and supports multicast."
             ),
             "features": ["Lightweight", "UDP-based", "Multicast support", "Low overhead"],
             "advantages": [
@@ -617,8 +613,8 @@ def compare_iot_protocols():
         },
         "HTTP": {
             "description": (
-                "Hypertext Transfer Protocol (HTTP) is the foundation of data communication on the web and is used "
-                "by many IoT devices despite not being optimized for constrained environments."
+                "Hypertext Transfer Protocol (HTTP) is the foundation of data communication on the web and is used by many IoT devices "
+                "despite not being optimized for constrained environments."
             ),
             "features": ["TCP-based", "Stateless", "Well-understood", "Secure when used with TLS"],
             "advantages": [
@@ -637,15 +633,54 @@ def compare_iot_protocols():
     return protocols
 
 # ----------------------------------------------------------------------
-# Endpoint: Comparative Analysis of IoT Protocols
+# Function: Generate Personalized Advice Based on Questionnaire Input
 # ----------------------------------------------------------------------
-@app.get("/iot_protocol_comparison", response_class=HTMLResponse)
-async def iot_protocol_comparison(request: Request):
+def generate_personalized_advice(use_case: str, priorities: list, number_of_devices: str) -> str:
+    advice = f"Based on your use case, '{use_case}', and planning to deploy {number_of_devices} device(s), consider the following recommendations:\n\n"
+    
+    if "Security" in priorities:
+        advice += "• Invest in robust encryption and secure authentication methods. Regularly update firmware and conduct security audits.\n"
+    if "Accessibility" in priorities:
+        advice += "• Ensure interfaces are accessible, following best practices for usability and incorporating accessibility guidelines.\n"
+    if "Cost" in priorities:
+        advice += "• Evaluate cost-effective hardware and open-source software options to balance expenses with performance.\n"
+    if "Performance" in priorities:
+        advice += "• Optimize network communication using edge computing or lightweight protocols to reduce latency.\n"
+    if "Ease-of-Use" in priorities:
+        advice += "• Focus on user-centric design and comprehensive documentation to facilitate smooth deployment and maintenance.\n"
+    
+    advice += "\nGeneral Recommendation: Regularly assess your deployment for vulnerabilities and gather user feedback to continuously refine your IoT solution."
+    return advice
+
+# ----------------------------------------------------------------------
+# Combined Endpoint: Comparative Analysis & Questionnaire for Personalized Advice
+# ----------------------------------------------------------------------
+@app.api_route("/iot_protocol_comparison", methods=["GET", "POST"], response_class=HTMLResponse)
+async def iot_protocol_comparison(
+    request: Request,
+    use_case: str = Form(None),
+    priority: list[str] = Form(None),
+    number_of_devices: str = Form(None)
+):
     protocols = compare_iot_protocols()
-    return templates.TemplateResponse("iot_protocol_comparison.html", {
-        "request": request,
-        "protocols": protocols
-    })
+    
+    if request.method == "POST":
+        # Process questionnaire input if available
+        advice = generate_personalized_advice(use_case, priority, number_of_devices)
+        return templates.TemplateResponse("iot_protocol_comparison_result.html", {
+            "request": request,
+            "protocols": protocols,
+            "advice": advice,
+            "use_case": use_case,
+            "priorities": priority,
+            "number_of_devices": number_of_devices
+        })
+    else:
+        # For GET requests, just show the protocol comparison and the questionnaire form.
+        return templates.TemplateResponse("iot_protocol_comparison.html", {
+            "request": request,
+            "protocols": protocols
+        })
 
 
 

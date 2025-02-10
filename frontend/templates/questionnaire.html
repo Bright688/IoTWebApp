@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}IoT User Questionnaire{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-4">IoT User Insights Questionnaire</h1>
+  <p class="mb-6">Please answer the following questions to receive personalized advice for your IoT deployment.</p>
+  
+  <form action="/questionnaire" method="post" class="space-y-6">
+    <div>
+      <label for="use_case" class="block text-gray-700 text-sm font-bold mb-2">Primary Use Case:</label>
+      <input type="text" id="use_case" name="use_case" placeholder="e.g., Home automation, Industrial monitoring" required
+             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    </div>
+    
+    <div>
+      <label class="block text-gray-700 text-sm font-bold mb-2">Priorities (select one or more):</label>
+      <div class="flex flex-col">
+        <label class="inline-flex items-center">
+          <input type="checkbox" name="priority" value="Security" class="form-checkbox">
+          <span class="ml-2">Security</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input type="checkbox" name="priority" value="Accessibility" class="form-checkbox">
+          <span class="ml-2">Accessibility</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input type="checkbox" name="priority" value="Cost" class="form-checkbox">
+          <span class="ml-2">Cost</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input type="checkbox" name="priority" value="Performance" class="form-checkbox">
+          <span class="ml-2">Performance</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input type="checkbox" name="priority" value="Ease-of-Use" class="form-checkbox">
+          <span class="ml-2">Ease-of-Use</span>
+        </label>
+      </div>
+    </div>
+    
+    <div>
+      <label for="number_of_devices" class="block text-gray-700 text-sm font-bold mb-2">Number of Devices:</label>
+      <input type="number" id="number_of_devices" name="number_of_devices" placeholder="e.g., 10" required
+             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    </div>
+    
+    <div class="flex items-center justify-between">
+      <button type="submit"
+              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
