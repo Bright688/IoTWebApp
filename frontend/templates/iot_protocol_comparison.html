@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}IoT Protocol Comparative Analysis{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-4">Comparative Analysis of IoT Protocols</h1>
+  <p class="mb-6">Below is a comparison of common IoT protocols. Click on each protocol to expand for detailed information.</p>
+  
+  <div id="protocols" class="space-y-4">
+    {% for protocol, details in protocols.items() %}
+    <div class="border rounded">
+      <button class="w-full text-left px-4 py-2 bg-blue-100 hover:bg-blue-200 focus:outline-none flex justify-between items-center" onclick="toggleSection('{{ protocol | replace(' ', '-') }}')">
+        <span class="font-bold">{{ protocol }}</span>
+        <span class="text-sm text-gray-600">(click to expand)</span>
+      </button>
+      <div id="{{ protocol | replace(' ', '-') }}" class="px-4 py-2 hidden">
+        <p><strong>Description:</strong> {{ details.description }}</p>
+        <p class="mt-2"><strong>Features:</strong></p>
+        <ul class="list-disc ml-6">
+          {% for feature in details.features %}
+          <li>{{ feature }}</li>
+          {% endfor %}
+        </ul>
+        <p class="mt-2"><strong>Advantages:</strong></p>
+        <ul class="list-disc ml-6">
+          {% for adv in details.advantages %}
+          <li>{{ adv }}</li>
+          {% endfor %}
+        </ul>
+        <p class="mt-2"><strong>Disadvantages:</strong></p>
+        <ul class="list-disc ml-6">
+          {% for disadv in details.disadvantages %}
+          <li>{{ disadv }}</li>
+          {% endfor %}
+        </ul>
+        <p class="mt-2"><strong>Use Cases:</strong></p>
+        <ul class="list-disc ml-6">
+          {% for use in details.use_cases %}
+          <li>{{ use }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  function toggleSection(sectionId) {
+    var el = document.getElementById(sectionId);
+    if (el.classList.contains("hidden")) {
+      el.classList.remove("hidden");
+    } else {
+      el.classList.add("hidden");
+    }
+  }
+</script>
+{% endblock %}

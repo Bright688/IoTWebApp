@@ -1,47 +1,32 @@
 {% extends "base.html" %}
 
-{% block title %}Assessment Report - IoT Security WebApp{% endblock %}
+{% block title %}Assessment Report - IoT Security Assessment Report{% endblock %}
 
 {% block content %}
-<div class="container mx-auto py-10 px-6">
-    <h1 class="text-3xl font-bold text-blue-600 text-center">Your IoT Security Assessment Report</h1>
-    <p class="text-lg text-gray-700 text-center mt-2">Here are your results based on the security assessment you completed.</p>
-
-    <div class="mt-8 p-6 bg-white shadow-lg rounded-lg">
-        <h2 class="text-xl font-semibold text-gray-800">Assessment Summary</h2>
-        <div class="mt-4">
-            <p class="text-lg text-gray-600">Total Score: <span class="font-bold text-green-600">{{ score }}/10</span></p>
-            <p class="text-lg text-gray-600 mt-2">Date: {{ date }}</p>
-        </div>
-
-        <h3 class="text-lg font-semibold text-gray-800 mt-6">Security Best Practices</h3>
-        <p class="text-gray-600 mt-2">
-            Based on your responses, here are some best practices and tips to improve the security of your IoT devices:
-        </p>
-        <ul class="list-disc list-inside mt-4">
-            <li>Ensure secure communication protocols (e.g., HTTPS, TLS) are implemented for all devices.</li>
-            <li>Regularly update the firmware of all connected devices to patch vulnerabilities.</li>
-            <li>Enable two-factor authentication for device management interfaces.</li>
-            <li>Use network segmentation to isolate critical IoT systems from other networks.</li>
-            <li>Monitor device traffic for unusual behavior or anomalies that may indicate a breach.</li>
-        </ul>
-
-        <h3 class="text-lg font-semibold text-gray-800 mt-6">Assessment Details</h3>
-        <div class="mt-4">
-            {% for question, answer in assessment_results.items() %}
-            <div class="mb-4">
-                <p class="font-semibold text-gray-800">{{ question }}</p>
-                <p class="text-gray-600">Your Answer: {{ answer }}</p>
-                <p class="text-gray-600">Correct Answer: {{ correct_answers[question] }}</p>
-            </div>
-            {% endfor %}
-        </div>
-
-        <div class="mt-6 text-center">
-            <a href="/download-report" class="inline-block bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition">
-                Download Full Report
-            </a>
-        </div>
-    </div>
+<div class="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+  <div class="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
+    <h1 class="text-3xl font-bold text-center mb-6">View Your Assessment Report</h1>
+    <form action="/get_report" method="get" class="space-y-6">
+      <div>
+        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          placeholder="you@example.com" 
+          required
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        >
+      </div>
+      <div class="flex items-center justify-between">
+        <button 
+          type="submit" 
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
+          View Report
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

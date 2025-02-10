@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Security Guidance{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-4">Security Guidance for Low Bandwidth IoT Devices</h1>
+  <p class="mb-6">{{ guidance.overview }}</p>
+  
+  <!-- Best Practices Section -->
+  <div class="border rounded mb-4">
+    <button class="w-full text-left px-4 py-2 bg-gray-200 hover:bg-gray-300 focus:outline-none flex justify-between items-center" onclick="toggleSection('best-practices')">
+      <span class="font-bold">Best Practices</span>
+      <span class="text-sm text-gray-600">(click to expand)</span>
+    </button>
+    <div id="best-practices" class="px-4 py-2 hidden">
+      <ul class="list-disc pl-5">
+        {% for practice in guidance.best_practices %}
+        <li class="mb-1">{{ practice }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Tips for Low Bandwidth Section -->
+  <div class="border rounded mb-4">
+    <button class="w-full text-left px-4 py-2 bg-gray-200 hover:bg-gray-300 focus:outline-none flex justify-between items-center" onclick="toggleSection('tips')">
+      <span class="font-bold">Tips for Low Bandwidth</span>
+      <span class="text-sm text-gray-600">(click to expand)</span>
+    </button>
+    <div id="tips" class="px-4 py-2 hidden">
+      <ul class="list-disc pl-5">
+        {% for tip in guidance.tips %}
+        <li class="mb-1">{{ tip }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Vulnerability Analysis Section -->
+  <div class="border rounded">
+    <button class="w-full text-left px-4 py-2 bg-gray-200 hover:bg-gray-300 focus:outline-none flex justify-between items-center" onclick="toggleSection('vulnerabilities')">
+      <span class="font-bold">Vulnerability Analysis</span>
+      <span class="text-sm text-gray-600">(click to expand)</span>
+    </button>
+    <div id="vulnerabilities" class="px-4 py-2 hidden">
+      {% if vulnerabilities and vulnerabilities|length > 0 %}
+        {% for vuln_name, details in vulnerabilities.items() %}
+        <div class="border-b pb-2 mb-2">
+          <button class="w-full text-left font-bold text-lg focus:outline-none flex justify-between items-center" onclick="toggleSection('{{ vuln_name | replace(' ', '-') }}')">
+            <span>{{ vuln_name }}</span>
+            <span class="text-sm text-gray-600">(click to expand)</span>
+          </button>
+          <div id="{{ vuln_name | replace(' ', '-') }}" class="pl-4 pt-2 hidden">
+            <p><strong>Description:</strong> {{ details.description }}</p>
+            <p><strong>Analysis:</strong> {{ details.analysis }}</p>
+            <p><strong>Best Practices:</strong></p>
+            <pre class="bg-gray-100 p-2 rounded whitespace-pre-wrap">{{ details.best_practices }}</pre>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-green-600">No vulnerabilities were detected.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleSection(sectionId) {
+    var el = document.getElementById(sectionId);
+    if (el.classList.contains("hidden")) {
+      el.classList.remove("hidden");
+    } else {
+      el.classList.add("hidden");
+    }
+  }
+</script>
+{% endblock %}
